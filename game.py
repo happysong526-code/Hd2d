@@ -78,6 +78,16 @@ def take_turn(state: GameState, action: str, rng: random.Random) -> list[str]:
     return messages
 
 
+def outcome_message(state: GameState) -> str | None:
+    if state.fled:
+        return "You escaped safely."
+    if not state.hero.is_alive():
+        return "Game over."
+    if not state.enemy.is_alive():
+        return "Victory! The village is safe."
+    return None
+
+
 def main() -> None:
     rng = random.Random()
     state = GameState(
@@ -101,12 +111,9 @@ def main() -> None:
         for message in take_turn(state, choice, rng):
             print(message)
 
-    if state.fled:
-        print("You escaped safely.")
-    elif state.enemy.is_alive() and not state.hero.is_alive():
-        print("Game over.")
-    elif not state.enemy.is_alive():
-        print("Victory! The village is safe.")
+    message = outcome_message(state)
+    if message:
+        print(message)
 
 
 if __name__ == "__main__":

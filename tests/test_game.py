@@ -1,6 +1,6 @@
 import unittest
 
-from game import Character, GameState, take_turn
+from game import Character, GameState, outcome_message, take_turn
 
 
 class FixedRng:
@@ -100,6 +100,14 @@ class GameTests(unittest.TestCase):
         self.assertEqual(state.hero.hp, 20)
         self.assertEqual(state.enemy.hp, 10)
         self.assertEqual(messages, ["You run away and abandon the quest."])
+
+    def test_outcome_message_prefers_defeat_over_enemy_death(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=0, max_hp=20, attack_power=8),
+            enemy=Character("Slime", hp=0, max_hp=10, attack_power=4),
+        )
+
+        self.assertEqual(outcome_message(state), "Game over.")
 
 
 if __name__ == "__main__":
