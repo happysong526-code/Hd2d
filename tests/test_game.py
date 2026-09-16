@@ -88,6 +88,19 @@ class GameTests(unittest.TestCase):
         self.assertEqual(state.hero.hp, 20)
         self.assertEqual(messages[0], "You strike the Slime for 0 damage.")
 
+    def test_run_ends_turn_without_counterattack(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=20, max_hp=20, attack_power=8),
+            enemy=Character("Slime", hp=10, max_hp=10, attack_power=4),
+        )
+
+        messages = take_turn(state, "run", FixedRng())
+
+        self.assertTrue(state.fled)
+        self.assertEqual(state.hero.hp, 20)
+        self.assertEqual(state.enemy.hp, 10)
+        self.assertEqual(messages, ["You run away and abandon the quest."])
+
 
 if __name__ == "__main__":
     unittest.main()

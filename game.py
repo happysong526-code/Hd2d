@@ -30,6 +30,7 @@ class GameState:
     hero: Character
     enemy: Character
     potions: int = 3
+    fled: bool = False
 
 
 def attack(attacker: Character, defender: Character, rng: random.Random) -> int:
@@ -61,7 +62,7 @@ def take_turn(state: GameState, action: str, rng: random.Random) -> list[str]:
             healed = heal_hero(state, rng)
             messages.append(f"You drink a potion and restore {healed} HP.")
     elif action == "run":
-        state.hero.hp = 0
+        state.fled = True
         messages.append("You run away and abandon the quest.")
         return messages
     else:
@@ -86,7 +87,7 @@ def main() -> None:
 
     print("Welcome, Hero. Defeat the Slime King to win.")
 
-    while state.hero.is_alive() and state.enemy.is_alive():
+    while state.hero.is_alive() and state.enemy.is_alive() and not state.fled:
         print(
             f"\nHero HP: {state.hero.hp}/{state.hero.max_hp} | "
             f"{state.enemy.name} HP: {state.enemy.hp}/{state.enemy.max_hp} | "
@@ -100,7 +101,9 @@ def main() -> None:
         for message in take_turn(state, choice, rng):
             print(message)
 
-    if state.enemy.is_alive() and not state.hero.is_alive():
+    if state.fled:
+        print("You escaped safely.")
+    elif state.enemy.is_alive() and not state.hero.is_alive():
         print("Game over.")
     elif not state.enemy.is_alive():
         print("Victory! The village is safe.")
