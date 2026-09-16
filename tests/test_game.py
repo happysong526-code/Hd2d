@@ -50,6 +50,31 @@ class GameTests(unittest.TestCase):
         self.assertEqual(state.enemy.hp, 10)
         self.assertEqual(messages, ["Unknown action. Choose attack, heal, or run."])
 
+    def test_heal_at_full_hp_still_reports_potion_use(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=20, max_hp=20, attack_power=8),
+            enemy=Character("Slime", hp=10, max_hp=10, attack_power=4),
+            potions=1,
+        )
+
+        messages = take_turn(state, "heal", FixedRng(7, 2))
+
+        self.assertEqual(state.hero.hp, 18)
+        self.assertEqual(state.potions, 0)
+        self.assertEqual(messages[0], "You drink a potion and restore 0 HP.")
+
+    def test_weak_attacker_still_deals_damage(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=20, max_hp=20, attack_power=1),
+            enemy=Character("Slime", hp=10, max_hp=10, attack_power=1),
+        )
+
+        messages = take_turn(state, "attack", FixedRng(1, 1))
+
+        self.assertEqual(state.enemy.hp, 9)
+        self.assertEqual(state.hero.hp, 19)
+        self.assertIn("for 1 damage", messages[0])
+
 
 if __name__ == "__main__":
     unittest.main()

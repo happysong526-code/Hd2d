@@ -33,7 +33,9 @@ class GameState:
 
 
 def attack(attacker: Character, defender: Character, rng: random.Random) -> int:
-    return defender.take_damage(rng.randint(2, attacker.attack_power))
+    low = min(2, attacker.attack_power)
+    high = max(2, attacker.attack_power)
+    return defender.take_damage(rng.randint(low, high))
 
 
 def heal_hero(state: GameState, rng: random.Random) -> int:
@@ -51,11 +53,11 @@ def take_turn(state: GameState, action: str, rng: random.Random) -> list[str]:
         damage = attack(state.hero, state.enemy, rng)
         messages.append(f"You strike the {state.enemy.name} for {damage} damage.")
     elif action == "heal":
-        healed = heal_hero(state, rng)
-        if healed:
-            messages.append(f"You drink a potion and restore {healed} HP.")
-        else:
+        if state.potions <= 0:
             messages.append("Your potion bag is empty.")
+        else:
+            healed = heal_hero(state, rng)
+            messages.append(f"You drink a potion and restore {healed} HP.")
     elif action == "run":
         state.hero.hp = 0
         messages.append("You run away and abandon the quest.")
