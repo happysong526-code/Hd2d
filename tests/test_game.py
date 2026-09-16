@@ -127,6 +127,15 @@ class GameTests(unittest.TestCase):
 
         self.assertEqual(outcome_message(state), "Game over.")
 
+    def test_outcome_message_prefers_victory_over_early_end(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=20, max_hp=20, attack_power=8),
+            enemy=Character("Slime", hp=0, max_hp=10, attack_power=4),
+            ended_early=True,
+        )
+
+        self.assertEqual(outcome_message(state), "Victory! The village is safe.")
+
 
 if __name__ == "__main__":
     unittest.main()

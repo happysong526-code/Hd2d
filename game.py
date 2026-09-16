@@ -80,14 +80,14 @@ def take_turn(state: GameState, action: str, rng: random.Random) -> list[str]:
 
 
 def outcome_message(state: GameState) -> str | None:
-    if state.ended_early:
-        return "No more input. Ending the adventure early."
     if not state.hero.is_alive():
         return "Game over."
-    if state.fled:
-        return "You escaped safely."
     if not state.enemy.is_alive():
         return "Victory! The village is safe."
+    if state.fled:
+        return "You escaped safely."
+    if state.ended_early:
+        return "No more input. Ending the adventure early."
     return None
 
 
