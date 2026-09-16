@@ -31,6 +31,7 @@ class GameState:
     enemy: Character
     potions: int = 3
     fled: bool = False
+    ended_early: bool = False
 
 
 def attack(attacker: Character, defender: Character, rng: random.Random) -> int:
@@ -79,6 +80,8 @@ def take_turn(state: GameState, action: str, rng: random.Random) -> list[str]:
 
 
 def outcome_message(state: GameState) -> str | None:
+    if state.ended_early:
+        return "No more input. Ending the adventure early."
     if state.fled:
         return "You escaped safely."
     if not state.hero.is_alive():
@@ -106,7 +109,7 @@ def main() -> None:
         try:
             choice = input("Choose your action (attack/heal/run): ")
         except EOFError:
-            print("\nNo more input. Ending the adventure early.")
+            state.ended_early = True
             break
         for message in take_turn(state, choice, rng):
             print(message)
