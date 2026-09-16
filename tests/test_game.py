@@ -118,6 +118,15 @@ class GameTests(unittest.TestCase):
 
         self.assertEqual(outcome_message(state), "No more input. Ending the adventure early.")
 
+    def test_outcome_message_prefers_defeat_over_flee(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=0, max_hp=20, attack_power=8),
+            enemy=Character("Slime", hp=10, max_hp=10, attack_power=4),
+            fled=True,
+        )
+
+        self.assertEqual(outcome_message(state), "Game over.")
+
 
 if __name__ == "__main__":
     unittest.main()
