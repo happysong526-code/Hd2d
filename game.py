@@ -33,8 +33,10 @@ class GameState:
 
 
 def attack(attacker: Character, defender: Character, rng: random.Random) -> int:
-    low = min(2, attacker.attack_power)
-    high = max(2, attacker.attack_power)
+    high = max(0, attacker.attack_power)
+    if high == 0:
+        return 0
+    low = min(2, high)
     return defender.take_damage(rng.randint(low, high))
 
 

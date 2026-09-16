@@ -62,6 +62,7 @@ class GameTests(unittest.TestCase):
         self.assertEqual(state.hero.hp, 18)
         self.assertEqual(state.potions, 0)
         self.assertEqual(messages[0], "You drink a potion and restore 0 HP.")
+        self.assertEqual(messages[1], "The Slime hits you for 2 damage.")
 
     def test_weak_attacker_still_deals_damage(self) -> None:
         state = GameState(
@@ -74,6 +75,18 @@ class GameTests(unittest.TestCase):
         self.assertEqual(state.enemy.hp, 9)
         self.assertEqual(state.hero.hp, 19)
         self.assertIn("for 1 damage", messages[0])
+
+    def test_zero_attack_power_deals_no_damage(self) -> None:
+        state = GameState(
+            hero=Character("Hero", hp=20, max_hp=20, attack_power=0),
+            enemy=Character("Slime", hp=10, max_hp=10, attack_power=0),
+        )
+
+        messages = take_turn(state, "attack", FixedRng())
+
+        self.assertEqual(state.enemy.hp, 10)
+        self.assertEqual(state.hero.hp, 20)
+        self.assertEqual(messages[0], "You strike the Slime for 0 damage.")
 
 
 if __name__ == "__main__":
